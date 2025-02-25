@@ -23,7 +23,7 @@ return {
 				'stylua',
 				'luacheck',
 				'prettier',
-				'eslint',
+				'eslint_d',
 				'shfmt',
 				'shellcheck',
 			}
