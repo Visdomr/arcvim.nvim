@@ -1,55 +1,46 @@
 return {
-        	{
+	{
 		"nvimtools/none-ls.nvim",
 		config = function()
 			local null_ls = require("null-ls")
 			null_ls.setup({
 				sources = {
-					-- Manual stylua (formatting)
+
+					-- Manual luacheck (diagnostics)
+
 					{
-						name = "stylua",
-						method = null_ls.methods.FORMATTING,
-						filetypes = { "lua", "luau" },
+						name = "luacheck",
+						method = null_ls.methods.DIAGNOSTICS,
+						filetypes = { "lua" },
 						generator = null_ls.generator({
-							command = vim.fn.stdpath("data") .. "/mason/bin/stylua",
-							args = { "--indent-type", "Spaces", "$FILENAME" },
+							command = vim.fn.stdpath("data") .. "/mason/bin/luacheck",
+							args = { "--formatter", "plain", "--codes", "$FILENAME" },
+							format = "line",
 							to_stdin = true,
+							from_stderr = true,
+							on_output = function(params)
+								local diagnostics = {}
+								-- Split output into lines
+								local lines = vim.split(params.output or "", "\n")
+								for _, line in ipairs(lines) do
+									-- Match pattern: filename:line:col: message
+									local filename, row, col, message = line:match(
+										"([^:]+):(%d+):(%d+):%s+(.+)")
+									if filename and row and col and message then
+										table.insert(diagnostics, {
+											filename = filename,
+											row = row,
+											col = col,
+											message = message,
+											source = "luacheck",
+										})
+									end
+								end
+								return diagnostics
+							end,
 						}),
 					},
-					-- Manual luacheck (diagnostics)
-					
-                                           {
-    name = "luacheck",
-    method = null_ls.methods.DIAGNOSTICS,
-    filetypes = { "lua" },
-    generator = null_ls.generator({
-        command = vim.fn.stdpath("data") .. "/mason/bin/luacheck",
-        args = { "--formatter", "plain", "--codes", "$FILENAME" },
-        format = "line",
-        to_stdin = true,
-        from_stderr = true,
-        on_output = function(params)
-            local diagnostics = {}
-            -- Split output into lines
-            local lines = vim.split(params.output or "", "\n")
-            for _, line in ipairs(lines) do
-                -- Match pattern: filename:line:col: message
-                local filename, row, col, message = line:match("([^:]+):(%d+):(%d+):%s+(.+)")
-                if filename and row and col and message then
-                    table.insert(diagnostics, {
-                        filename = filename,
-                        row = row,
-                        col = col,
-                        message = message,
-                        source = "luacheck",
-                    })
-                end
-            end
-            return diagnostics
-        end,
-    }),
-},				}})
-			
+
 					-- Manual black (formatting)
 					{
 						name = "black",
@@ -60,7 +51,7 @@ return {
 							args = { "--quiet", "--fast", "-" },
 							to_stdin = true,
 						}),
-					}
+					},
 					-- Manual isort (formatting)
 					{
 						name = "isort",
@@ -71,7 +62,7 @@ return {
 							args = { "--stdout", "--filename", "$FILENAME", "-" },
 							to_stdin = true,
 						}),
-					}
+					},
 					-- Manual prettier (formatting)
 					{
 						name = "prettier",
@@ -87,7 +78,7 @@ return {
 							args = { "--stdin-filepath", "$FILENAME" },
 							to_stdin = true,
 						}),
-					}
+					},
 					-- Manual ruff (diagnostics)
 					{
 						name = "ruff",
@@ -107,7 +98,7 @@ return {
 								return parser(params)
 							end,
 						}),
-					}
+					},
 					-- Manual clang_format (formatting)
 					{
 						name = "clang_format",
@@ -118,7 +109,7 @@ return {
 							args = { "--assume-filename", "$FILENAME" },
 							to_stdin = true,
 						}),
-					}
+					},
 					-- Manual cppcheck (diagnostics)
 					{
 						name = "cppcheck",
@@ -149,7 +140,7 @@ return {
 								return parser(params)
 							end,
 						}),
-					}
+					},
 					-- Manual eslint (diagnostics)
 					{
 						name = "eslint_d",
@@ -170,7 +161,7 @@ return {
 											col = message.column,
 											message = message.message,
 											severity = message.severity == 2 and
-											1 or 2, -- 1=error, 2=warning
+											    1 or 2, -- 1=error, 2=warning
 											source = "eslint_d",
 										})
 									end
@@ -178,7 +169,7 @@ return {
 								return diagnostics
 							end,
 						}),
-					}
+					},
 					-- Manual shfmt (formatting)
 					{
 						name = "shfmt",
@@ -189,7 +180,7 @@ return {
 							args = { "-filename", "$FILENAME" },
 							to_stdin = true,
 						}),
-					}
+					},
 					-- Manual shellcheck (diagnostics)
 					{
 						name = "shellcheck",
@@ -217,10 +208,27 @@ return {
 								return parser(params)
 							end,
 						}),
-					}
-				
-			
-			vim.keymap.set("n", "<leader>gf", vim.lsp.buf.format, {})
+					},
+					-- Manual stylua (formatting)
+					{
+						name = "stylua",
+						method = null_ls.methods.FORMATTING,
+						filetypes = { "lua", "luau" },
+						generator = null_ls.generator({
+							command = vim.fn.stdpath("data") ..
+							"/home/eric/.local/share/nvim/mason/bin/stylua",
+							args = { "--indent-type", "Spaces", "$FILENAME" },
+							to_stdin = true,
+						}),
+					},
+				},
+			})
+			vim.keymap.set("n", "<leader>gf", function()
+				local ok, err = pcall(vim.lsp.buf.format)
+				if not ok and not string.match(err, "on_output: expected function, got nil") then
+					print(err)
+				end
+			end, {})
 		end,
 	},
 }
