@@ -40,18 +40,42 @@ return {
 	{
 		'neovim/nvim-lspconfig',
 		config = function()
+			local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
 			local lspconfig = require 'lspconfig'
-			lspconfig.lua_ls.setup {}
-			lspconfig.ts_ls.setup {}
-			lspconfig.bashls.setup {}
-			lspconfig.clangd.setup {}
-			lspconfig.html.setup {}
-			lspconfig.htmx.setup {}
-			lspconfig.kotlin_language_server.setup {}
-			lspconfig.pylsp.setup {}
-			lspconfig.tsp_server.setup {}
-			lspconfig.lemminx.setup {}
-			lspconfig.yamlls.setup {}
+			lspconfig.lua_ls.setup({
+			  capabilities = capabilities
+			})
+			lspconfig.ts_ls.setup({
+			  capabilities = capabilities
+			})
+			lspconfig.bashls.setup({
+			  capabilities = capabilities
+			})
+			lspconfig.clangd.setup({
+			  capabilities = capabilities
+			})
+			lspconfig.html.setup({
+			  capabilities = capabilities
+			})
+			lspconfig.htmx.setup({
+			  capabilities = capabilities
+			})
+			lspconfig.kotlin_language_server.setup({
+			  capabilities = capabilities
+			})
+			lspconfig.pylsp.setup({
+			  capabilities = capabilities
+			})
+			lspconfig.tsp_server.setup({
+			  capabilities = capabilities
+			})
+			lspconfig.lemminx.setup({
+			  capabilities = capabilities
+			})
+			lspconfig.yamlls.setup({
+			  capabilities = capabilities
+			})
 
 			vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
 			vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
