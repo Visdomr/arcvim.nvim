@@ -29,6 +29,8 @@ return {
 
 			-- Apply the config
 			alpha.setup(dashboard.config)
+
+			vim.keymap.set('n', '<leader>a', ':Alpha<CR>', { noremap = true, silent = true })
 		end,
 	},
 }
