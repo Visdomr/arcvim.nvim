@@ -27,6 +27,11 @@ vim.g.clipboard = {
   cache_enabled = 0,
 }
 
+-- Normal mode keybindings
+vim.keymap.set('n', '<C-f>', ':bnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-b>', ':bprev<CR>', { noremap = true, silent = true })
+
+vim.keymap.set('n', '<leader>wq', ':wall | qall<CR>', { noremap = true, silent = true })
 
 local opts = {}
 
