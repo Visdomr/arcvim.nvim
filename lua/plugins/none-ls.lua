@@ -1,10 +1,19 @@
 return {
 	{
 		"nvimtools/none-ls.nvim",
+		dependencies = {
+			"nvimtools/none-ls-extras.nvim",
+		},
+
 		config = function()
 			local null_ls = require("null-ls")
 			null_ls.setup({
 				sources = {
+
+					require("none-ls.diagnostics.eslint_d"),
+					require("none-ls.diagnostics.cpplint"),
+					require("none-ls.formatting.jq"),
+					require("none-ls.code_actions.eslint"),
 
 					-- Manual luacheck (diagnostics)
 
@@ -153,7 +162,7 @@ return {
 							format = "json",
 							on_output = function(params)
 								local diagnostics = {}
-								local json = vim.json.decode(params.output)
+								local json = params.output
 								if json and json[1] and json[1].messages then
 									for _, message in ipairs(json[1].messages) do
 										table.insert(diagnostics, {
@@ -216,7 +225,7 @@ return {
 						filetypes = { "lua", "luau" },
 						generator = null_ls.generator({
 							command = vim.fn.stdpath("data") ..
-							"/home/eric/.local/share/nvim/mason/bin/stylua",
+							    "/home/eric/.local/share/nvim/mason/bin/stylua",
 							args = { "--indent-type", "Spaces", "$FILENAME" },
 							to_stdin = true,
 						}),
