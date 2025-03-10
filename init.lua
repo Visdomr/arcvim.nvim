@@ -17,12 +17,12 @@ vim.g.maplocalleader = ' '
 vim.g.clipboard = {
   name = 'wl-clipboard',
   copy = {
-    ['+'] = 'wl-copy -selection clipboard',
-    ['*'] = 'wl-copy -selection primary',
+    ['+'] = 'wl-copy',
+    ['*'] = 'wl-copy',
   },
   paste = {
-    ['+'] = 'wl-paste -selection clipboard -o',
-    ['*'] = 'wl-paste -selection primary -o',
+    ['+'] = 'wl-paste',
+    ['*'] = 'wl-paste',
   },
   cache_enabled = 0,
 }

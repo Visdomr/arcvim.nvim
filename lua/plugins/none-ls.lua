@@ -97,17 +97,31 @@ return {
 							command = vim.fn.stdpath("data") .. "/mason/bin/ruff",
 							args = { "--quiet", "$FILENAME" },
 							format = "line",
-							to_stdin = true,
+							to_stdin = false, -- Disable stdin, use file directly
 							from_stderr = true,
 							on_output = function(params)
-								local parser = null_ls.diagnostics.match({
-									pattern = "([^:]+):(%d+):(%d+):%s+(.+)",
-									groups = { "filename", "row", "col", "message" },
-								})
-								return parser(params)
+								if not params.output then
+									return {} -- No diagnostics if no output
+								end
+								local filename = params.output:match("([^:]+)")
+								local row = params.output:match(":(%d+):")
+								local col = params.output:match(":%d+:(%d+):")
+								local message = params.output:match(":%d+:%d+:%s+(.+)")
+								if filename and row and col and message then
+									return {
+										filename = filename,
+										row = row,
+										col = col,
+										message = message,
+										source = "ruff",
+									}
+								end
+								return {}
 							end,
 						}),
 					},
+
+
 					-- Manual clang_format (formatting)
 					{
 						name = "clang_format",
