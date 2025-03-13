@@ -1,5 +1,9 @@
 return {
 	{
+		"tpope/vim-fugitive"
+	},
+
+	{
 		'lewis6991/gitsigns.nvim',
 		opts = {
 			on_attach = function(bufnr)

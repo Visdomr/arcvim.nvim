@@ -10,21 +10,29 @@ if not vim.loop.fs_stat(lazypath) then
 	}
 end
 
+vim.diagnostic.config({
+	virtual_text = true, -- Re-enable virtual text
+	signs = true,       -- Keep signs in the gutter
+	underline = true,   -- Underline issues
+	update_in_insert = false, -- Don’t update while typing
+	severity_sort = true, -- Sort by severity
+})
+
 vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 vim.g.clipboard = {
-  name = 'wl-clipboard',
-  copy = {
-    ['+'] = 'wl-copy',
-    ['*'] = 'wl-copy',
-  },
-  paste = {
-    ['+'] = 'wl-paste',
-    ['*'] = 'wl-paste',
-  },
-  cache_enabled = 0,
+	name = 'wl-clipboard',
+	copy = {
+		['+'] = 'wl-copy',
+		['*'] = 'wl-copy',
+	},
+	paste = {
+		['+'] = 'wl-paste',
+		['*'] = 'wl-paste',
+	},
+	cache_enabled = 0,
 }
 
 -- Normal mode keybindings
