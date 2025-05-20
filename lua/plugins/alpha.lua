@@ -25,7 +25,7 @@ return {
 			}
 
 			-- Footer (e.g., a quote or version)
-			dashboard.section.footer.val = "Neovim - Powered by xAI’s Grok"
+			dashboard.section.footer.val = "Hey look, I did it."
 
 			-- Apply the config
 			alpha.setup(dashboard.config)
